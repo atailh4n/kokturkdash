@@ -1,0 +1,79 @@
+{
+  "_from": "discord-dashboard",
+  "_id": "discord-dashboard@1.2.5",
+  "_inBundle": false,
+  "_integrity": "sha512-jntOpveQFnRLtCqmOUkpOUE2VdlZAgd/euvlhgHAYgFuPfjj8UL+NRXMFVkyLZ22nBBvRmyMUrIipENULLx1qQ==",
+  "_location": "/discord-dashboard",
+  "_phantomChildren": {
+    "cookie-signature": "1.0.6",
+    "on-headers": "1.0.2",
+    "parseurl": "1.3.3",
+    "uid-safe": "2.1.5"
+  },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "discord-dashboard",
+    "name": "discord-dashboard",
+    "escapedName": "discord-dashboard",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/discord-dashboard/-/discord-dashboard-1.2.5.tgz",
+  "_shasum": "f5379d431d0b623174293a7e5e877f8455c7953f",
+  "_spec": "discord-dashboard",
+  "_where": "C:\\Users\\atahi\\OneDrive\\Masaüstü\\kokturkdcbot",
+  "author": {
+    "name": "breftejk"
+  },
+  "bugs": {
+    "url": "https://github.com/breftejk/Discord.js-Web-Dashboard/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "colors": "*",
+    "dbd-capriham-theme": "^1.0.4",
+    "discord.js": "*",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-partials": "^0.3.0",
+    "express-session": "^1.17.2",
+    "form-data": "^4.0.0",
+    "https": "^1.0.0",
+    "node-fetch": "*",
+    "session-file-store": "^1.5.0"
+  },
+  "deprecated": false,
+  "description": "The best way to create a Web Dashboard for your Discord Bot! No need to edit files or write the server from scratch!",
+  "devDependencies": {},
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://assistants.ga/dbd-docs/",
+  "keywords": [
+    "discord",
+    "discord.js",
+    "discordjs",
+    "discord dashboard",
+    "discord web dashboard",
+    "web dashboard",
+    "dashboard"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "discord-dashboard",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/breftejk/Discord.js-Web-Dashboard.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.2.5"
+}
