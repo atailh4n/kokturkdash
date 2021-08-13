@@ -1,6 +1,7 @@
 # ![q](https://i.hizliresim.com/7cyf88f.png)kokturkdash
 ![header](https://i.hizliresim.com/p4u1tvj.png)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/atailh4n/kokturkdash?color=ff0002&label=VERS%C4%B0YON&style=for-the-badge) ![npm bundle size (version)](https://img.shields.io/bundlephobia/min/kokturkdash/0.0.3-public?color=ff0000&label=BOYUT&style=for-the-badge) ![npm](https://img.shields.io/npm/dm/kokturkdash?color=ff0002&label=AYLIK%20%C4%B0ND%C4%B0RME&style=for-the-badge)
+
 **Discord botlarınız için basit, güvenli ve anlaşılır dashboard modülüdür.**
 
 ## 😎0.0.5-beta Sürümü Güncellemesi:
