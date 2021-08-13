@@ -5,7 +5,8 @@
 
 **Discord botlarınız için basit, güvenli ve anlaşılır dashboard modülüdür.**
 
-## 😎0.0.5-beta Sürümü Güncellemesi:
+## 😎0.0.5 Tam Kararlı Sürümü Güncellemesi:
+**BUG FIXED:** `redirect_uri` hatası
 * Methodlar, classlar, callbackler ve bazı kurallar değişti.
 * Dökümanlar eklendi
 * formTypes geçerliliğini yitirdi. formTipleri kullanın.
@@ -56,7 +57,7 @@ const WebPanel = new kokturkdash.PanelIcerik({
                     secimID: 'lang', //ID kısmı benzersiz(unique) olmalıdır!
                     secimIsim: "Dil", //Başlık Kısmı
                     secimAciklama: "Botun dilini seçin.", //Açıklama kısmı
-                    secimTipi: kokturkdash.formTypes.secenekler({"Türkçe": "tr", "İngilizce": "en"}, false),//Seçim obje tipi
+                    secimTipi: kokturkdash.formTipleri.secenekler({"Türkçe": "tr", "İngilizce": "en"}, false),//Seçim obje tipi
                     //Var olan veriyi kontrol ediyoruz ve yazdırıyoruz
                     normalVeri: async ({guild}) => {//async kullanmaya özen gösterin! Veritabanları için gereklidir. (Normal veri başlangıcı)
                         return dil[guild.id] || null;//Veriyi veritabanından çekince ya veri görüntülenecek yada boş dönecek
@@ -73,7 +74,7 @@ const WebPanel = new kokturkdash.PanelIcerik({
                     secimID: 'log_ch',
                     secimIsim: "Log Kanalı",
                     secimAciklama: "Logların nereye atılacağını seçin.",
-                    secimTipi: kokturkdash.formTypes.kanalSecici(false),
+                    secimTipi: kokturkdash.formTipleri.kanalSecici(false),
                     normalVeri: async ({guild}) => {
                         return logsys[guild.id] || null;
                     },
@@ -86,7 +87,7 @@ const WebPanel = new kokturkdash.PanelIcerik({
                     secimID: 'sys_aktif',
                     secimIsim: "Loglama Aç/Kapat",
                     secimAciklama: "Loglama açıp kapamaya yarar.",
-                    secimTipi: kokturkdash.formTypes.tik(false, false),
+                    secimTipi: kokturkdash.formTipleri.tik(false, false),
                     normalVeri: async ({guild}) => {
                         return sysactive[guild.id] || null;
                     },
@@ -105,7 +106,7 @@ const WebPanel = new kokturkdash.PanelIcerik({
                     secimID: 'booster_rol',
                     secimIsim: "Booster Rolü",
                     secimAciklama: "Booster Rolünü seçin.",
-                    secimTipi: kokturkdash.formTypes.rolSecici(false),
+                    secimTipi: kokturkdash.formTipleri.rolSecici(false),
                     normalVeri: async ({guild}) => {
                         return booster[guild.id] || null;
                     },
@@ -118,7 +119,7 @@ const WebPanel = new kokturkdash.PanelIcerik({
                     secimID: 'hosgeldin_msj',
                     secimIsim: "Hoşgeldin Mesajı",
                     secimAciklama: "Hoşgeldin mesajı girin.",
-                    secimTipi: kokturkdash.formTypes.metingirisi("Lütfen metin girin...", 7, 30, false, false),
+                    secimTipi: kokturkdash.formTipleri.metingirisi("Lütfen metin girin...", 7, 30, false, false),
                     normalVeri: async ({guild}) => {
                         return hosgeldinmesaji[guild.id] || null;
                     },
@@ -154,7 +155,6 @@ Herşeyi ayarladıktan sonra, herşeyi başlatmak için bunu kullan:
 ```js
 WebPanel.calistir();
 ```
-Panelinii görmek için ilk önce [Kurulum](#en-bastan) yap.
 
 # ⚙️Sunucu Ayarları
 Panel içeriğiniz sunucu ayarları yapmaya müsaittir. Aşağıda örnekleri mevcuttur:
@@ -171,7 +171,7 @@ Kokturkdash web panel modülünün birkaç gereksinime ihtiyacı var.
 * **Client ID**
 * **Client Secret**
 * **Discord.js v12 Client**
-olarak sıralanır. [Discord](#discord) kısmında bunları daha detaylı olarak anlattık.
+olarak sıralanır. [Discord](#![discord](https://images.sftcdn.net/images/t_app-logo-s,f_auto/p/f4c4dac6-c830-11e6-bd9d-599bf3caf9c2/162521750/discord-icon.png)Discord) kısmında bunları daha detaylı olarak anlattık.
 
 # 🌈Temalar
 
@@ -189,7 +189,7 @@ Güzel gözüküyor değil mi?
 * **kategoriID**: Bu kategorinin ID'sidir. Buraya sadece alfanumerik şeyler girmelisin. Ayrıca sayfa URI'sinde ID gözükecek.
 * **kategoriIsim**: Kategorinin gözükecek ismi. Kısaca tıkladığınız kategori isimleri.
 * **kategoriAciklama**: Aslında bu bir yerde gözükmez. Sadece kategorinin açıklamasıdır.
-* **kategoriSecimListesi**: Asıl iş burda. Burda seçimleri dolduracaksınız. Kategorinin içidir. [Dökümanın diğer sayfasında](#Seçim-Methodları) bunun hakkında konuştuk.
+* **kategoriSecimListesi**: Asıl iş burda. Burda seçimleri dolduracaksınız. Kategorinin içidir. [Dökümanın diğer sayfasında](#🔢Seçim-Methodları) bunun hakkında konuştuk.
 
 ## 🔢Seçim Methodları
 
