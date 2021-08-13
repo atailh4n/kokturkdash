@@ -1,6 +1,6 @@
 {
   "name": "kokturkdash",
-  "version": "0.0.4-beta",
+  "version": "0.0.4-public",
   "description": "Discord.js Botları için Anlaşılır Dashboard modülü.",
   "main": "index.js",
   "scripts": {
