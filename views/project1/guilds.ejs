@@ -3,10 +3,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title><%=req.websiteTitle%> - Manage Guilds</title>
+        <title><%=req.websiteBaslik%> - Sunucuları Yönet</title>
         <%- include('partials/css.ejs') %>
+        <link rel="stylesheet" type="text/css" href="https://assistants.ga/purecookie.css" async />
+        <script src="https://assistants.ga/purecookie.js" async></script>
 
-<link rel="icon" href="https://cdn.glitch.com/db0b8650-f177-462e-91a7-058f94a18139%2Ficon_alfa.png">
+<link rel="icon" href='<%=req.iconURL%>'>
 
         <style>
           #myBtn {
@@ -36,9 +38,9 @@
           <%- include('partials/top.ejs') %>
 
             <br>
-            <h2>Manage server</h2>
+            <h2>Sunucuyu Yönet</h2>
 <p>
-    Below you can see all servers on which <em>you have permissions</em>. To manage the server, sometimes you need to <strong>invite a bot to it</strong>. However, if it is already there, <strong>do it right!</strong></p>
+    Aşağıda <em>yetkin olan</em> tüm sunucuları görmektesin. Bir sunucuyu yönetmek için, <strong>Yönet</strong> tuşuna tıklaman yeterlidir. Eğer sunucunda ekli değilse <strong>Davet Et</strong> butonundan sunucuna ekleyebilirsin.</p>
     <hr>
         <p>
             <div class="flex-container">
@@ -55,7 +57,7 @@
   </div>
   <div class="media-body">
     <h4 class="media-heading" style="margin-left: 10px;"><%=req.session.guilds[i].name%></h4>
-    <a href="/invite" role="button" style="margin-left: 10px;" class="btn btn-secondary btn-lg">Invite bot</a>
+    <a href="/invite" role="button" style="margin-left: 10px;" class="btn btn-secondary btn-lg">Davet Et</a>
   </div>
 </div>
                     <%}else{%>
@@ -67,7 +69,7 @@
   </div>
   <div class="media-body">
     <h4 class="media-heading" style="margin-left: 10px;"><%=req.session.guilds[i].name%></h4>
-    <a href="/guild/<%=req.session.guilds[i].id%>" role="button" style="margin-left: 10px;" class="btn btn-secondary btn-lg">Manage bot</a>
+    <a href="/guild/<%=req.session.guilds[i].id%>" role="button" style="margin-left: 10px;" class="btn btn-secondary btn-lg">Yönet</a>
   </div>
 </div>
                 <%}%>

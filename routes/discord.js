@@ -25,7 +25,7 @@ router.get('/callback', (req, res) => {
     const redirectUri = req.redirectUri;
     
     const accessCode = req.query.code;
-    if (!accessCode) return res.redirect('https://panel.kokturks.cf');
+    if (!accessCode) throw new Error('No access code returned from Discord');
 
     const data = new FormData();
     data.append('client_id', clientId);

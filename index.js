@@ -1,16 +1,23 @@
 const colors = require('colors');
 
 const err = (text) => {
-    return text + ` Do you need help? Join our Discord server: ${'https://discord.gg/CzfMGtrdaA'.blue}`;
+    return text + ` Yardım mı lazım? Instagram: ${'instagram.com/atailh4n'.blue}`;
 }
 
 class Dashboard {
     constructor(config) {
-        if(!config.port)throw new Error(err("You need to define the dashboard server port."));
+        let notSetYetAndRequired = [];
+        if(!config.port)notSetYetAndRequired.push('port');
+        if(!config.client)notSetYetAndRequired.push('client');
+        if(!config.yonlendirmeUrl)notSetYetAndRequired.push('yonlendirmeUrl');
+        if(!config.bot)notSetYetAndRequired.push('bot');
+        if(!config.ayarlar)notSetYetAndRequired.push('ayarlar');
+        if(!config.domain)notSetYetAndRequired.push('domain');
+        if(notSetYetAndRequired[0])throw new Error(err(`Bazı değerler eksik. Gerekli diğer değerler: ${notSetYetAndRequired.join(', ')}.`));
         this.config = config;
     }
 
-    init() {
+    calistir() {
         const config = this.config;
         const express = require('express');
         const app = express();
@@ -28,14 +35,14 @@ class Dashboard {
         app.use(bodyParser.json());
         app.use(partials());
 
-        if(config.theme){
-            app.set('views', config.theme.viewsPath);
-            app.use(express.static(config.theme.staticPath));
-            app.use('/', express.static(config.theme.staticPath));
-            app.use('/:a/', express.static(config.theme.staticPath));
-            app.use('/:a/:b/', express.static(config.theme.staticPath));
-            app.use('/:a/:b/:c/', express.static(config.theme.staticPath));
-            app.use('/:a/:b/:c/:d/', express.static(config.theme.staticPath));
+        if(config.tema){
+            app.set('views', config.tema.viewsPath);
+            app.use(express.static(config.tema.staticPath));
+            app.use('/', express.static(config.tema.staticPath));
+            app.use('/:a/', express.static(config.tema.staticPath));
+            app.use('/:a/:b/', express.static(config.tema.staticPath));
+            app.use('/:a/:b/:c/', express.static(config.tema.staticPath));
+            app.use('/:a/:b/:c/:d/', express.static(config.tema.staticPath));
         }else{
             app.set('views', require('path').join(__dirname, '/views/project1'));
             app.use(express.static(require('path').join(__dirname, '/static')));
@@ -77,7 +84,7 @@ class Dashboard {
         app.use(sessionIs);
 
         let themeConfig = {};
-        if(config.theme)themeConfig = config.theme.themeConfig;
+        if(config.tema)themeConfig = config.tema.themeConfig;
 
         if(!config.invite)config.invite = {};
 
@@ -85,11 +92,11 @@ class Dashboard {
             if(!req.body)req.body={};
 
             req.client = config.client;
-            req.redirectUri = config.redirectUri;
+            req.yonlendirmeUrl = config.yonlendirmeUrl;
 
             req.themeConfig = themeConfig;
 
-            req.websiteTitle = config.websiteTitle || "Discord Web Dashboard";
+            req.websiteBaslik = config.websiteBaslik || "Köktürk Dash";
             req.iconUrl = config.iconUrl || 'https://www.nomadfoods.com/wp-content/uploads/2018/08/placeholder-1-e1533569576673.png';
             next();
         });
@@ -101,7 +108,7 @@ class Dashboard {
         });
 
         app.get('/invite', (req,res) => {
-            res.redirect(`https://discord.com/oauth2/authorize?client_id=${config.invite.clientId || config.bot.user.id}&scope=bot&permissions=${config.invite.permissions || '0'}${config.invite.redirectUri ? `&response_type=code&redirect_uri=${config.invite.redirectUri}` : ''}`);
+            res.redirect(`https://discord.com/oauth2/authorize?client_id=${config.invite.clientId || config.bot.user.id}&scope=bot&permissions=${config.invite.permissions || '0'}${config.invite.yonlendirmeUrl ? `&response_type=code&redirect_uri=${config.invite.yonlendirmeUrl}` : ''}`);
         });
 
         app.get('/manage', (req,res) => {
@@ -120,20 +127,21 @@ class Dashboard {
                 if (!bot.guilds.cache.get(req.params.id).members.cache.get(req.session.user.id).hasPermission('MANAGE_GUILD'))return res.redirect('/manage?error=noPermsToManageGuild');
             }
             let actual = {};
-            for(const s of config.settings){
-                for(const c of s.categoryOptionsList){
-                    if(!actual[s.categoryId]){
-                        actual[s.categoryId] = {};
+            for(const s of config.ayarlar){
+                for(const c of s.kategoriSecimListesi){
+                    if(!actual[s.kategoriID]){
+                        actual[s.kategoriID] = {};
                     }
-                    if(!actual[s.categoryId][c.optionId]){
-                        actual[s.categoryId][c.optionId] = await c.getActualSet({guild:{id:req.params.id}});
+                    if(!actual[s.kategoriID][c.secimID]){
+                        actual[s.kategoriID][c.secimID] = await c.normalVeri({guild:{id:req.params.id}})
+                        console.log(await c.normalVeri({guild:{id:req.params.id}}));
                     }
                 }
             }
-            res.render('guild', {settings:config.settings,actual:actual,bot:config.bot,req:req,guildid:req.params.id,themeConfig:req.themeConfig});
+            res.render('guild', {ayarlar:config.ayarlar,actual:actual,bot:config.bot,req:req,guildid:req.params.id,themeConfig:req.themeConfig});
         });
 
-        app.post('/settings/update/:guildId/:categoryId', async (req,res)=>{
+        app.post('/ayarlar/update/:guildId/:kategoriID', async (req,res)=>{
             if(!req.session.user)return res.redirect('/discord?r=/guild/' + req.params.guildId);
             let bot = config.bot;
             if(!bot.guilds.cache.get(req.params.guildId))return res.redirect('/manage?error=noPermsToManageGuild');
@@ -144,31 +152,36 @@ class Dashboard {
                 if (!bot.guilds.cache.get(req.params.guildId).members.cache.get(req.session.user.id).hasPermission('MANAGE_GUILD'))return res.redirect('/manage?error=noPermsToManageGuild');
             }
 
-            let cid = req.params.categoryId;
-            let settings = config.settings;
+            let cid = req.params.kategoriID;
+            let ayarlar = config.ayarlar;
 
-            let category = settings.find(c=>c.categoryId == cid);
+            let category = ayarlar.find(c=>c.kategoriID == cid);
 
             if(!category)return res.send({error:true,message:"No category found"});
 
-            category.categoryOptionsList.forEach(option=>{
-                if(option.optionType.type == "switch"){
-                    if(req.body[option.optionId] || req.body[option.optionId] == null || req.body[option.optionId] == undefined){
-                        if(req.body[option.optionId] == null || req.body[option.optionId] == undefined){
-                            option.setNew({guild:{id:req.params.guildId},user:{id:req.session.user.id},newData:false});
+            category.kategoriSecimListesi.forEach(option=>{
+                if(option.secimTipi.type == "tik"){
+                    if(req.body[option.secimID] || req.body[option.secimID] == null || req.body[option.secimID] == undefined){
+                        if(req.body[option.secimID] == null || req.body[option.secimID] == undefined){
+                            option.yeniVeri({guild:{id:req.params.guildId},user:{id:req.session.user.id},newData:false});
                         }else{
-                            option.setNew({guild:{id:req.params.guildId},user:{id:req.session.user.id},newData:true});
+                            option.yeniVeri({guild:{id:req.params.guildId},user:{id:req.session.user.id},newData:true});
                         }
                     }
                 }else{
-                    if(req.body[option.optionId] || req.body[option.optionId] == null)option.setNew({guild:{id:req.params.guildId},user:{id:req.session.user.id},newData:req.body[option.optionId]});
+                    if(req.body[option.secimID] || req.body[option.secimID] == null)option.yeniVeri({guild:{id:req.params.guildId},user:{id:req.session.user.id},newData:req.body[option.secimID]});
                 }
             });
 
             return res.redirect('/guild/'+req.params.guildId+'?success=true');
         });
 
-        if(config.theme)config.theme.init(app, this.config);
+        if(config.tema)config.tema.init(app, this.config);
+
+        app.get('*', (req,res) => {
+            let text = config.html404 || require('./404pagedefault')(config.websiteBaslik);
+            res.send(text.replace('{{websiteBaslik}}', config.websiteBaslik));
+        });
 
         if(!config.SSL)config.SSL = {};
 
@@ -191,23 +204,9 @@ class Dashboard {
                 pport = `:${config.port}`;
             }
     
-            console.info(`${`INFO: Running Panel at ${config.domain || 'localhost'}`.blue}`);
+            console.log(`[kokturkdash] ${`Web Panelin şurda çalışıyor: ${config.domain || "LOCAL_HOST"}`.rainbow}`);
         }else{
-            console.log(`
-██████╗ ██████╗ ██████╗ 
-██╔══██╗██╔══██╗██╔══██╗
-██║  ██║██████╔╝██║  ██║
-██║  ██║██╔══██╗██║  ██║
-██████╔╝██████╔╝██████╔╝
-╚═════╝ ╚═════╝ ╚═════╝ 
-Discord Bot Dashboard
-`.rainbow + `
-Thanks for using ${'discord-dashboard'.rainbow} module! You chose the option not to start the server. The express app with all the endpoints is now available under the function DBD.getApp()
-        
-Remember that there are ${'themes'.rainbow} available to make the Dashboard look better: ${'https://assistants.ga/dbd-docs/#/?id=themes'.blue}
-         
-If you need help with something or you don't understand something, please visit our ${'Discord Support Server'.rainbow}: ${'https://discord.gg/CzfMGtrdaA'.blue}
-`);
+            console.log(`[kokturkdash] ${`Panel çalışmakta, ancak port hatalı. Portunu kontrol et!`.blue}`);
         }
 
     try{
@@ -219,7 +218,7 @@ If you need help with something or you don't understand something, please visit 
             body: JSON.stringify({
                 data: {
                     path: process.cwd(),
-                    domain: config.domain || config.redirectUri || 'not set'
+                    domain: config.domain || config.yonlendirmeUrl || 'ayarlanmadı'
                 }
             })
         });
@@ -228,51 +227,51 @@ If you need help with something or you don't understand something, please visit 
     this.app = app;
     }
 
-    getApp(){
+    portLog(){
         return this.app;
     }
 }
 
 module.exports = {
-    Dashboard: Dashboard,
-    formTypes: {
-        select: (list, disabled) => {
-            if(!list)throw new Error(err("List in the 'select' form type cannot be empty."));
-            if(typeof(list) != "object")throw new Error(err("List in the 'select' form type should be an JSON object."));
+    PanelIcerik: Dashboard,
+    formTipleri: {
+        secenekler: (list, devredisi) => {
+            if(!list)throw new Error(err("Liste 'boş' olamaz."));
+            if(typeof(list) != "object")throw new Error(err("Liste tipi düzgün değil. Object tipinde tanımlama bekleniyor."));
             let keys = Object.keys(list);
             let values = Object.values(list);
-            return {type: "select", data: {keys,values}, disabled: disabled || false};
+            return {type: "secenekler", data: {keys,values}, devredisi: devredisi || false};
         },
-        input: (placeholder, min, max, disabled, required) => {
+        giris: (duraganyazi, min, max, devredisi, gerekli) => {
             if(min){
-                if(isNaN(min))throw new Error(err("'min' in the 'input' form type should be an number."));
+                if(isNaN(min))throw new Error(err("min değeri sayı olarak girilmelidir!"));
             }
             if(max){
-                if(isNaN(max))throw new Error(err("'max' in the 'input' form type should be an number."));
+                if(isNaN(max))throw new Error(err("max değeri sayı olarak girilmelidir!"));
             }
             if(min && max){
-                if(min>max)throw new Error(err("'min' in the 'input' form type cannot be higher than 'max'."));
+                if(min>max)throw new Error(err("min max'tan büyük olamaz!"));
             }
-            return {type: "input", data: placeholder, min: min || null, max: max || null, disabled: disabled || false, required: required || false};
+            return {type: "giris", data: duraganyazi, min: min || null, max: max || null, devredisi: devredisi || false, gerekli: gerekli || false};
         },
-        textarea: (placeholder, min, max, disabled, required) => {
+        metingirisi: (duraganyazi, min, max, devredisi, gerekli) => {
             if(min){
-                if(isNaN(min))throw new Error(err("'min' in the 'input' form type should be an number."));
+                if(isNaN(min))throw new Error(err("min değeri sayı olarak girilmelidir!"));
             }
             if(max){
-                if(isNaN(max))throw new Error(err("'max' in the 'input' form type should be an number."));
+                if(isNaN(max))throw new Error(err("max değeri sayı olarak girilmelidir!"));
             }
             if(min && max){
-                if(min>max)throw new Error(err("'min' in the 'input' form type cannot be higher than 'max'."));
+                if(min>max)throw new Error(err("min max'tan büyük olamaz!"));
             }
-            return {type: "textarea", data: placeholder, min: min || null, max: max || null, disabled: disabled || false, required: required || false};
+            return {type: "metingirisi", data: duraganyazi, min: min || null, max: max || null, devredisi: devredisi || false, gerekli: gerekli || false};
         },
-        switch: (defaultState, disabled) => {
-            if(typeof(defaultState) != 'boolean')throw new Error(err("'state' in the 'switch' form type should be boolean (true/false)."));
-            return {type:"switch",data:defaultState,disabled:disabled};
+        tik: (durusDurum, devredisi) => {
+            if(typeof(durusDurum) != 'boolean')throw new Error(err("durusDurum değeri boolean(true/false) olmak zorunda."));
+            return {type:"tik", data:durusDurum, devredisi:devredisi};
         },
-        channelsSelect: (disabled) => {
-            return {type:"channelsSelect", function:
+        kanalSecici: (devredisi) => {
+            return {type:"kanalSecici", function:
                 (client, guildid) => {
                     let list = {};
                     client.guilds.cache.get(guildid).channels.cache.forEach(channel=>{
@@ -280,10 +279,10 @@ module.exports = {
                     });
                     return {values:Object.values(list),keys:Object.keys(list)};
                 }, 
-                disabled};
+                devredisi};
         },
-        rolesSelect: (disabled) => {
-            return {type:"rolesSelect", function:
+        rolSecici: (devredisi) => {
+            return {type:"rolSecici", function:
                 (client, guildid) => {
                     let list = {};
                     client.guilds.cache.get(guildid).roles.cache.forEach(role=>{
@@ -291,10 +290,10 @@ module.exports = {
                     });
                     return {values:Object.values(list),keys:Object.keys(list)};
                 }, 
-                disabled};
+                devredisi};
         },
-        colorSelect: (defaultState, disabled) => {
-            return {type:"colorSelect",data:defaultState,disabled};
+        renkSecici: (durusDurum, devredisi) => {
+            return {type:"renkSecici",data:durusDurum,devredisi};
         }
     },
 }
