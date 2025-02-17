@@ -1,3 +1,7 @@
+#### kokturkdash maalesef desteği kesilmiştir. 17.02.2025 itibari ile tüm npm paketlerimi bırakmış bulunmaktayım.
+
+---
+
 # ![q](https://i.hizliresim.com/7cyf88f.png)kokturkdash
 ![header](https://i.hizliresim.com/p4u1tvj.png)
 
